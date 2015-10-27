@@ -1,21 +1,30 @@
 
 A set of ec2 support scripts for the kmer-model which takes a bam and automatically generates fitted output to be placed into amazon's S3 storage system
 
-**Make sure your specified bucket name exists in s3 before starting!**
+## Prerequisites
+Register an Amazon Elastic Cloud 2 (EC2) account following the instruction [here](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html)
 
 
-##Example
+##	Quick example
 
 Run the command in the git repo root:
 
 ```
 docker pull thashim/kmm-launcher-cov/
-docker run --rm -w `pwd` -v /cluster:/cluster -i thashim/kmm-launcher-cov/ /kmm/run.onestrand.r example/covbinom.list /cluster/ec2/auth.txt
+docker run --rm -w `pwd` -v /topfolder:/topfolder -i thashim/kmm-launcher-cov/ /kmm/run.onestrand.r example/covbinom.list example/auth.txt
 ```
 
-##Configuring the KMM
+There are three parameters to tune in the running command:
+
++ `topfolder`: This should be the **common** top folder of the repo and all your bam/genome/list/auth files. For example if the repo and all you relevant files are under /cluster/project/wordfinder, you use either  */cluster* or */cluster/project* or */cluster/project/wordfinder*. The function of this argument is for the scripts inside Docker to access the data files on your file system.
++ `example/covbinom.list`: See step1
++ `example/auth.txt`: See step2
+
+##Step1: Set up information needed to run on EC2
 
 ### auth.txt
+Example: (/example/auth.txt)
+
 ```
 realm:us-east-1
 price:3.0
@@ -26,7 +35,7 @@ secret_key:REDACTED
 key_name:starcluster
 mailaddr:thashim@csail.mit.edu
 ```
-This file specifies information related to launch computing instance on Amazon EC2 cloud.
+
 
 #####Useful options:
 
@@ -46,9 +55,12 @@ This file specifies information related to launch computing instance on Amazon E
 
 `ami` sets the AMI type: you will want to use the HVM image (`ami-864d84ee`) if you use any other instances like cc2.8xlarge or r3.8xlarge.
 
+
+##Step2: Set up parameters for the model
 ### *.list
 
 Example: (/example/covbinom.list)
+
 ```
 #bam.prefix /cluster/projects/wordfinder/bams/
 #gbase /cluster/projects/wordfinder/data/genome/
@@ -70,9 +82,11 @@ fos_run1,fos/bam1,fos/bam2,fos/bam3
 #quality 20
 ctcf_run1,ctcf/bam1,ctcf/bam2,ctcf/bam3
 ```
+
 Nearly all options can be overridden in a .list file.
 
 The general format of a .list file is
+
 ```
 #variable_name1 value
 #variable_name2 value
@@ -91,34 +105,34 @@ Later variable assignment lines starting with `#` will override earlier ones. In
 
 #####Common arguments
 
-`bam_prefix`: the path to where bam files are stored. Launcher will look for `bam_prefix+bam_name` where `bam_name` is the name in the `experiment_name`.
+`bam_prefix`: the path to where bam files are stored. Launcher will look for *`bam_prefix`+bam_name*, where *bam_name* is each of the name specified after *experiment_name*. For instance, if we use example/covbinom.list, the launcher will look for */cluster/projects/wordfinder/bams/fos/bam1, /cluster/projects/wordfinder/bams/fos/bam2, /cluster/projects/wordfinder/bams/fos/bam3* for the job *fos_run1*
 
-`gbase`: path to where genome files are stored. do not change if run within gifford lab.
+`gbase`: path to where genome files are stored. Do not change if run within gifford lab. Currently only hg19 and mm10 are supported, and their genome datafile can be found on [GERV website](http://gerv.csail.mit.edu).
 
-`quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions.
+`quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
 
-`postfix`: postfix applied to jobs. Each job will go into a S3 bucket where they are separated into folders named `experiment_name+postfix`
+`postfix`: postfix applied to jobs. Each job will go into a S3 bucket where they are separated into folders named *experiment_name+`postfix`*
 
-`bucket_name`: s3 bucket name. This should generally be your username / project name to avoid mixing multiple people's jobs.
+`bucket_name`: s3 bucket name. This should generally be your username / project name to avoid mixing multiple people's jobs. **Make sure your specified bucket name exists in s3 before starting!**
 
 `genome`: set to the organism genome. Currently only hg19 and mm10 are supported.
 
-`branch`: Use `glm_v2` for the full model. Use `no91` for the model without DNase-seq covariates.
+`branch`: Use *glm_v2* for the full model. Use *no91* for the model without DNase-seq covariates.
 
-`covariate`: list of experiments to use to predict the target experiment (ie DNase-seq predicting a ChIP). **Don't include this parameter for the model without DNase-seq covariates.**
+`covariate`: The path (relative to `bam_prefox`) of a list of experiments to use to predict the target experiment (ie DNase-seq predicting a ChIP). The launcher will look for *`bam_prefix`+bam_name*. For example, if we use example/covbinom.list, the launcher will look for covariate files at the location */cluster/projects/wordfinder/bams/dnase/bam1* and */cluster/projects/wordfinder/bams/dnase/bam2*.  **Don't include this parameter for the model without DNase-seq covariates.**
 
 #####Tweakable parameters
 
-`maxk`: Maximum kmer length to consider, 8 is generally good enough and the start of diminishing returns.
+`maxk`: Maximum kmer length to consider, 8 is generally good enough and the start of diminishing returns, and was used in the GERV paper.
 
-`k`: the window size. The model looks within a `[-k,+k]` region around each Kmer match. Should be a multiple of RESOL.
+`k`: the window size. The model looks within a `[-k,+k]` region around each Kmer match. Should be a multiple of RESOL. k=200 was used in the GERV paper.
 
-`read.max`: truncate input at read.max to avoid giant read-spikes from affecting model. Generally 5-10 is good for experiments in the < 1 billion read range
+`read.max`: truncate input at read.max to avoid giant read-spikes from affecting model. Generally 5-10 is good for experiments in the < 1 billion read range. 5 was used for the GERV paper.
 
 
-`resol`: the resolution at which parameters are stored. for example, if K=1000, RESOL=5, then the model fits 200 paremters, each representing 5 bases. **RESOL MUST BE ABLE TO DIVIDE K**
+`resol`: the resolution at which parameters are stored. for example, if K=1000, RESOL=5, then the model fits 200 paremters, each representing 5 bases. **RESOL MUST BE ABLE TO DIVIDE K**. resol=1 was used in the GERV paper
 
-`smooth.window`: smooth the input by this many bases before feeding into the model. Useful for low-coverage experiments. Default of 10-20 is fine for all but extreme high or low coverage experiments.
+`smooth.window`: smooth the input by this many bases before feeding into the model. Useful for low-coverage experiments. Default of 10-20 is fine for all but extreme high or low coverage experiments. 50 was used in the GERV paper.
 
-`kbeta`: window sie for the prediction of target (ie ChIP) from covariate (ie DNase). **Don't include this parameter for model without DNase-seq covariates.**
+`kbeta`: window size for the prediction of target (ie ChIP) from covariate (ie DNase). **Don't include this parameter for model without DNase-seq covariates**. 200 was used in the GERV paper
 
