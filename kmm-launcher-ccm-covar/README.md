@@ -14,7 +14,7 @@ docker pull thashim/kmm-launcher-cov/
 docker run --rm -w `pwd` -v /topfolder:/topfolder -i thashim/kmm-launcher-cov/ /kmm/run.onestrand.r example/covbinom.list example/auth.txt
 ```
 
-There are three parameters to tune in the running command:
+There are three parameters changable in the running command:
 
 + `topfolder`: This should be the **common** top folder of the repo and all your bam/genome/list/auth files. For example if the repo and all you relevant files are under /cluster/project/wordfinder, you use either  */cluster* or */cluster/project* or */cluster/project/wordfinder*. The function of this argument is for the scripts inside Docker to access the data files on your file system.
 + `example/covbinom.list`: See step1
@@ -112,15 +112,16 @@ Later variable assignment lines starting with `#` will override earlier ones. In
 + `gbase`: The folder where genome files are stored. Do not change if run within gifford lab. Currently only hg19 and mm10 are supported, and their genome datafile can be found on [GERV website](http://gerv.csail.mit.edu).
 + `genome`: set to the organism genome. Currently only hg19 and mm10 are supported.
 
-+ `quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
-
-+ `postfix`: postfix applied to jobs. Each job will go into a S3 bucket where they are separated into folders named `experiment_name+postfix`
-
 + `bucket_name`: s3 bucket name. This should generally be your username / project name to avoid mixing multiple people's jobs. 
+
++ `postfix`: postfix applied to jobs. Each job will go into a S3 bucket where they are separated into folders named $experiment_name$$postfix$ (no spacer in between)
+
 
 + `branch`: Use *glm_v2* for the full model. Use *no91* for the model without DNase-seq covariates.
 
 + `covariate`: The path (relative to `bam_prefox`) of DNase-seq bams. 
+
++ `quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
 
 #####Tweakable parameters
 
