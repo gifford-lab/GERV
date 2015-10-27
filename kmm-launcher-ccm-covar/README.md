@@ -39,21 +39,21 @@ mailaddr:thashim@csail.mit.edu
 
 #####Useful options:
 
-`price` sets the max bid price. Setting this value to Inf will use on-demand allocation (cannot be killed) but will cost a fixed price of ~$.16 / hr. Use this setting only if there's heavy contention, and you cannot wait. $3 is reasonable. Set too low and your jobs will get killed before completed
++ `price`: The max bid price. Setting this value to Inf will use on-demand allocation (cannot be killed) but will cost a fixed price of ~$.16 / hr. Use this setting only if there's heavy contention, and you cannot wait. $3 is reasonable. Set too low and your jobs will get killed before completed
 
-`region` sets the job submit regions, you can check the spot prices of a `c3.8xlarge` and pick a cheap region
++ `region`: The job submit regions. You can check the spot prices of a `c3.8xlarge` and pick a cheap region
 
-`rsa_key` points to the physical location of the key-pair file for your Amazon EC2 account. This file enables the user to remotely communicate with the EC2 instance created. Checkout [here](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) for a instruction to generate your key-pair file.
++ `rsa_key`: The physical location of the key-pair file for your Amazon EC2 account. This file enables the user to remotely communicate with the EC2 instance created. Checkout [here](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) for a instruction to generate your key-pair file.
 
-`access_key` and `secret_key` are the credentials for your Amazon EC2 account. Checkout [here](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) for instruction.
++ `access_key` and `secret_key`: The credentials for your Amazon EC2 account. Checkout [here](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) for instruction.
 
-`mailaddr` sets the email address that gets emailed at the end of a job. The emails will probably get spam-boxed first, so check spam folder.
++ `mailaddr` sets the email address that gets emailed at the end of a job. The emails will probably get spam-boxed first, so check spam folder.
 
 #####Optional options:
 
-`itype` sets the instance type: valid alternatives are cc2.8xlarge, to use this you must also change the AMI.
++ `itype`: The instance type: valid alternatives are cc2.8xlarge, to use this you must also change the AMI.
 
-`ami` sets the AMI type: you will want to use the HVM image (`ami-864d84ee`) if you use any other instances like cc2.8xlarge or r3.8xlarge.
++ `ami`: The AMI type: you will want to use the HVM image (`ami-864d84ee`) if you use any other instances like cc2.8xlarge or r3.8xlarge.
 
 
 ##Step2: Set up parameters for the model
@@ -103,36 +103,45 @@ The launcher parses from top to bottom, setting each variable_name to value. Whe
 
 Later variable assignment lines starting with `#` will override earlier ones. In the example above, `fos_run1` launches with a `quality` parameter of 0, but `ctcf_1` is launched with `quality` of 20 due to the later override line.
 
+
+
 #####Common arguments
 
-`bam_prefix`: the path to where bam files are stored. Launcher will look for *`bam_prefix`+bam_name*, where *bam_name* is each of the name specified after *experiment_name*. For instance, if we use example/covbinom.list, the launcher will look for */cluster/projects/wordfinder/bams/fos/bam1, /cluster/projects/wordfinder/bams/fos/bam2, /cluster/projects/wordfinder/bams/fos/bam3* for the job *fos_run1*
++ `bam_prefix`: The top folder of **ALL** the bam files used, including ChIP-seq and covaraites DNase-seq bams.
 
-`gbase`: path to where genome files are stored. Do not change if run within gifford lab. Currently only hg19 and mm10 are supported, and their genome datafile can be found on [GERV website](http://gerv.csail.mit.edu).
++ `gbase`: The folder where genome files are stored. Do not change if run within gifford lab. Currently only hg19 and mm10 are supported, and their genome datafile can be found on [GERV website](http://gerv.csail.mit.edu).
++ `genome`: set to the organism genome. Currently only hg19 and mm10 are supported.
 
-`quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
++ `quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
 
-`postfix`: postfix applied to jobs. Each job will go into a S3 bucket where they are separated into folders named *experiment_name+`postfix`*
++ `postfix`: postfix applied to jobs. Each job will go into a S3 bucket where they are separated into folders named `experiment_name+postfix`
 
-`bucket_name`: s3 bucket name. This should generally be your username / project name to avoid mixing multiple people's jobs. **Make sure your specified bucket name exists in s3 before starting!**
++ `bucket_name`: s3 bucket name. This should generally be your username / project name to avoid mixing multiple people's jobs. 
 
-`genome`: set to the organism genome. Currently only hg19 and mm10 are supported.
++ `branch`: Use *glm_v2* for the full model. Use *no91* for the model without DNase-seq covariates.
 
-`branch`: Use *glm_v2* for the full model. Use *no91* for the model without DNase-seq covariates.
-
-`covariate`: The path (relative to `bam_prefox`) of a list of experiments to use to predict the target experiment (ie DNase-seq predicting a ChIP). The launcher will look for *`bam_prefix`+bam_name*. For example, if we use example/covbinom.list, the launcher will look for covariate files at the location */cluster/projects/wordfinder/bams/dnase/bam1* and */cluster/projects/wordfinder/bams/dnase/bam2*.  **Don't include this parameter for the model without DNase-seq covariates.**
++ `covariate`: The path (relative to `bam_prefox`) of DNase-seq bams. 
 
 #####Tweakable parameters
 
-`maxk`: Maximum kmer length to consider, 8 is generally good enough and the start of diminishing returns, and was used in the GERV paper.
++ `maxk`: Maximum kmer length to consider, 8 is generally good enough and the start of diminishing returns, and was used in the GERV paper.
 
-`k`: the window size. The model looks within a `[-k,+k]` region around each Kmer match. Should be a multiple of RESOL. k=200 was used in the GERV paper.
++ `k`: the window size. The model looks within a `[-k,+k]` region around each Kmer match. Should be a multiple of RESOL. k=200 was used in the GERV paper.
 
-`read.max`: truncate input at read.max to avoid giant read-spikes from affecting model. Generally 5-10 is good for experiments in the < 1 billion read range. 5 was used for the GERV paper.
++ `read.max`: truncate input at read.max to avoid giant read-spikes from affecting model. Generally 5-10 is good for experiments in the < 1 billion read range. 5 was used for the GERV paper.
 
 
-`resol`: the resolution at which parameters are stored. for example, if K=1000, RESOL=5, then the model fits 200 paremters, each representing 5 bases. **RESOL MUST BE ABLE TO DIVIDE K**. resol=1 was used in the GERV paper
++ `resol`: the resolution at which parameters are stored. for example, if K=1000, RESOL=5, then the model fits 200 paremters, each representing 5 bases. **RESOL MUST BE ABLE TO DIVIDE K**. resol=1 was used in the GERV paper
 
-`smooth.window`: smooth the input by this many bases before feeding into the model. Useful for low-coverage experiments. Default of 10-20 is fine for all but extreme high or low coverage experiments. 50 was used in the GERV paper.
++ `smooth.window`: smooth the input by this many bases before feeding into the model. Useful for low-coverage experiments. Default of 10-20 is fine for all but extreme high or low coverage experiments. 50 was used in the GERV paper.
 
-`kbeta`: window size for the prediction of target (ie ChIP) from covariate (ie DNase). **Don't include this parameter for model without DNase-seq covariates**. 200 was used in the GERV paper
++ `kbeta`: window size for the prediction of target (ie ChIP) from covariate (ie DNase). **Don't include this parameter for model without DNase-seq covariates**. 200 was used in the GERV paper
+
+#### Things to note:
+
++ **Make sure your specified bucket name exists in s3 before starting!**
+
++ **All the path of the bam files should be relative to the folder specificied after `bam_prefix`**
+
++ **Don't include `kbeta` and `covariates` for the model without DNase-seq covariates.**
 
