@@ -1,0 +1,11 @@
+#Do not put spaces before or after colon.
+#For a full example see /cluster/ec2/auth.txt
+realm:us-east-1
+price:3.0
+region:us-east-1d
+rsa_key:/cluster/ec2/starcluster.rsa
+access_key:REDACTED
+secret_key:REDACTED
+key_name:starcluster
+bucket_name:kmer_rc2
+mailaddr:thashim@csail.mit.edu

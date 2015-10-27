@@ -1,0 +1,10 @@
+#model_parentdir /cluster/zeng/research/kmer/s3/tf-chipseq/
+#expt_name Mayers_UGF1_HepG2_win50.ccm
+#maxchr 22
+#genomefile /cluster/projects/wordfinder/data/genome/hg19.in
+#snp_dir /cluster/zeng/research/kmer/hg19/FINAL.ver140827/SNP_data/USF1/BCRANK_AF001_1KG_1000flank_AF001_1KG/
+#snp_name BCRANK_1000flank_AF001_1KG
+#VT 1
+#VT_prefix VT=
+#VT_suffix SNP
+#outputdir /cluster/zeng/code/research/test/

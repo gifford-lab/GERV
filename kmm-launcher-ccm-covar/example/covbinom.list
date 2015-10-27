@@ -1,0 +1,24 @@
+#bam.prefix /cluster/projects/wordfinder/bams/
+#gbase /cluster/projects/wordfinder/data/genome/
+#quality 0
+#postfix .cov-test
+#bucket_name ccm-test
+#maxk 8
+#k 1000
+#resol 4
+#read.max 5
+#genome hg19
+#branch master
+#link POISSON
+#smooth.window 20
+#covariate none
+#kbeta 100
+
+#cov.max 1
+#covariate encHuman_dnase/encDnase_K562_1-ready.bam,encHuman_dnase/encDnase_K562_2-ready.bam,encHuman_dnase/encDnase_K562_1V2-ready.bam,encHuman_dnase/encDnase_K562_2V2-ready.bam,encHuman_dnase/encDnase_K562_3V2-ready.bam
+NFKB_cov,nfkb/encodeSydh_Nfkb_Iggrab_1_chip.bwa_tpx.hg19.bam,nfkb/encodeSydh_Nfkb_Iggrab_2_chip.bwa_tpx.hg19.bam,nfkb/encodeSydh_Nfkb_Iggrab_3_chip.bwa_tpx.hg19.bam,nfkb/encodeSydh_Nfkb_Iggrab_4_chip.bwa_tpx.hg19.bam
+
+#cov.max 1
+#kbeta 0
+#covariate none
+NFKB_nocov,nfkb/encodeSydh_Nfkb_Iggrab_1_chip.bwa_tpx.hg19.bam,nfkb/encodeSydh_Nfkb_Iggrab_2_chip.bwa_tpx.hg19.bam,nfkb/encodeSydh_Nfkb_Iggrab_3_chip.bwa_tpx.hg19.bam,nfkb/encodeSydh_Nfkb_Iggrab_4_chip.bwa_tpx.hg19.bam

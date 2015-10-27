@@ -1,0 +1,16 @@
+#bam.prefix /cluster/projects/wordfinder/bams/
+#gbase /cluster/projects/wordfinder/data/genome/
+#quality 0
+#postfix .nrf_rc1
+#bucket_name batch_runs
+#maxk 8
+#k 1000
+#resol 4
+#read.max 5
+#genome mm10
+#branch batch
+#price Inf
+
+#smooth.window 10
+#quality 20
+dnase_2,mes_dnase/D0_175-400_130801.bwa.mm10.bam,mes_dnase/D0_50-100_130801.bwa.mm10.bam

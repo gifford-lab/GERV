@@ -1,0 +1,21 @@
+#!/bin/bash
+READ_STR
+COV_STR
+RUN_STR
+sudo Rscript ~/delete_later/R/postproc.r /mnt/input/ /mnt/output/ /mnt/summaries/ ~/runlog.txt  ~/delete_later/build/ TEST_CHR
+cd ~/delete_later; git log > ~/gitlog.txt; git diff > ~/gitdiff.txt; cd ~/
+aws s3 mb s3://BUCKET_NAME/ --region REGION
+aws s3 cp ~/input.list s3://BUCKET_NAME/RUN_NAME/ --region REGION
+aws s3 cp ~/runall.sh s3://BUCKET_NAME/RUN_NAME/ --region REGION
+aws s3 cp ~/params.txt s3://BUCKET_NAME/RUN_NAME/ --region REGION
+aws s3 cp ~/runlog.txt s3://BUCKET_NAME/RUN_NAME/ --region REGION
+aws s3 cp ~/gitlog.txt s3://BUCKET_NAME/RUN_NAME/ --region REGION
+aws s3 cp ~/gitdiff.txt s3://BUCKET_NAME/RUN_NAME/ --region REGION
+find /mnt/summaries/* | xargs -L 1 -I {} aws s3 cp {} s3://BUCKET_NAME/RUN_NAME/summaries/ --region REGION
+find /mnt/output/*.bin | xargs -L 1 -I {} aws s3 cp {} s3://BUCKET_NAME/RUN_NAME/output/ --region REGION
+lzop -1 /mnt/input/*
+find /mnt/input/*.lzo | xargs -L 1 -I {} aws s3 cp {} s3://BUCKET_NAME/RUN_NAME/input/ --region REGION
+aws ses send-email --from thashim@csail.mit.edu --to EMAIL --text  "$(head -n 100 ~/nohup.txt)" --subject RUN_NAME_complete --region REGION
+aws s3 cp ~/nohup.txt s3://BUCKET_NAME/RUN_NAME/ --region REGION
+aws ec2 cancel-spot-instance-requests --spot-instance-request-ids SIRNAME --region REGION
+aws ec2 terminate-instances --instance-ids INAME --region REGION
