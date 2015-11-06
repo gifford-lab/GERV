@@ -25,7 +25,7 @@ Please refer to the [README.md](https://github.com/gifford-lab/GERV/blob/master/
 
 
 ## License and Citation
-GERV is released under [Apache License 2.0](https://github.com/gifford-lab/GERV/blob/master/variant-scoring/LICENSE).
+GERV is released under [Apache License 2.0](https://github.com/gifford-lab/GERV/blob/master/LICENSE).
 
 Please cite GERV if it helps in your research:
 
