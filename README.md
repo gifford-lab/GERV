@@ -1,6 +1,7 @@
-The source code for GERV accompanying the following paper: 
+# GERV
+[![License](https://img.shields.io/hexpm/l/plug.svg)](LICENSE)
 
-Zeng, Haoyang, Hashimoto, Tatsunori, Kang, Daniel D & Gifford, David K (2015). GERV: A Statistical Method for Generative Evaluation of Regulatory Variants for Transcription Factor Binding. *Bioinformatics*. [[link]](http://bioinformatics.oxfordjournals.org/content/early/2015/10/15/bioinformatics.btv565.abstract)
+GERV is a statistical model that predicts the effect of genetic variants on transcription factor binding using ChIP-seq and DNase-seq data. 
 
 ##Pre-requisite
 Packed with [Docker](https://www.docker.com/), GERV is universally runnable across different versions of linux systems without the need for further configuration. So the only pre-requisite is to install Docker.
@@ -21,6 +22,24 @@ Please refer to the [README.md](https://github.com/gifford-lab/GERV/blob/master/
 In this part, GERV use a k-mer model trained in the first step to score a set of variants that user provided.
 
 Please refer to the [README.md](https://github.com/gifford-lab/GERV/blob/master/variant-scoring/README.md) for more details on running this part.
+
+
+## License and Citation
+GERV is released under [Apache License 2.0](https://github.com/gifford-lab/GERV/blob/master/variant-scoring/LICENSE).
+
+Please cite GERV if it helps in your research:
+
+```
+@article{Zeng2015,
+author = {Zeng, Haoyang and Hashimoto, Tatsunori and Kang, Daniel D and Gifford, David K},
+doi = {10.1093/bioinformatics/btv565},
+journal = {Bioinformatics},
+month = {oct},
+title = {{GERV: A Statistical Method for Generative Evaluation of Regulatory Variants for Transcription Factor Binding}},
+year = {2015}
+}
+
+```
 
 
 
