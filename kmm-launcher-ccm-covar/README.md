@@ -10,8 +10,8 @@ Register an Amazon Elastic Cloud 2 (EC2) account following the instruction [here
 Run the command in the git repo root:
 
 ```
-docker pull thashim/kmm-launcher-cov/
-docker run --rm -w `pwd` -v /topfolder:/topfolder -i thashim/kmm-launcher-cov/ /kmm/run.onestrand.r example/covbinom.list example/auth.txt
+docker pull thashim/kmm-launcher-cov
+docker run --rm -w `pwd` -v /topfolder:/topfolder -i thashim/kmm-launcher-cov /kmm/run.onestrand.r example/covbinom.list example/auth.txt
 ```
 
 There are three parameters changable in the running command:
