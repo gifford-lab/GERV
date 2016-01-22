@@ -16,24 +16,17 @@ Run the below command from any where on your machine:
 docker pull haoyangz/wave-variant-scoring-covar
 docker run --rm -w /scripts/ -u $(id -u) -v /topfolder:/topfolder -i haoyangz/wave-variant-scoring-covar /scripts/run.r  full_path_of_param_file   your_order > log 2>&1 &
 ```
+* `topfolder` : The common topfolder under which you store **ALL** the relevant data and want to output the result. For Gifford lab, it is usually `/cluster`
 
-## Full example
-A complete example bash code to perform preprocessing, scoring for all 22 chromosome for human variant data, and combining the results can be find in  `run_model.sh`.
+* `full_path_of_param_file `: path to param file (see below)
+* `your_order`: what you wish to do (see below)
 
-
-##Command line parameters
-
-
-### `topfolder`
-The common topfolder under which you store **ALL** the relevant data and want to output the result. For Gifford lab, it is usually `/cluster`
-
-### `full_path_of_param_file `
-
+## Prepare a param file
 This file specifies the parameters related to the variant scoring part of the model. The launcher parses from top to bottom, setting each variable name to value. The actual name of this file is not important, as long as the full path is provided as input.
 
 **The only valid delimiter for this file is 'space' not tab or comma or anything else**. This also means you cannot use directories or parameters that have spaces in them.
 
-Example: (examples/params.list)
+Example: (see [here](https://github.com/gifford-lab/GERV/blob/master/variant-scoring/examples/params.list))
 
 ```
 #model_parentdir /cluster/zeng/research/kmer/s3/tf-chipseq/
@@ -72,8 +65,10 @@ Example: (examples/params.list)
 + `outputdir`: full path to where you wish to output the scoring results
 
 
-### `your_order`
-Three choices of `order` are available, each of which corresponds to one of the following three steps (in order):
+
+
+### `Specify your order`
+Three choices of `your_order` are available, each of which corresponds to one of the following three steps (in order):
 
 +	`preprocess`
 
@@ -88,3 +83,6 @@ Three choices of `order` are available, each of which corresponds to one of the 
 +	`combine.result` (optional)
 
 	Combine the scoring result for each chromosome into one compressed MATLAB MAT file $outputdir$/snp-ranking-raw-result/allChr.$expt_name$.$snp_name$.mat. Another MAT file $outputdir$/snp-ranking-raw-result/allChr.$expt_name$.$snp_name$.size.mat stores the number of variants scored on each chromosome (from 1 to $maxchr$)
+	
+	## Full example
+A complete example bash code to perform preprocessing, scoring for all 22 chromosome for human variant data, and combining the results can be find [here](https://github.com/gifford-lab/GERV/blob/master/variant-scoring/run_model.sh).
