@@ -10,12 +10,20 @@ Scripts for scoring variants using the raw output from the kmer-model
 
 ##Quick example
 
-Run the below command from any where on your machine:
-
+For runs with (DNase-seq) covariate:
 ```
 docker pull haoyangz/wave-variant-scoring-covar
 docker run --rm -w /scripts/ -u $(id -u) -v /topfolder:/topfolder -i haoyangz/wave-variant-scoring-covar /scripts/run.r  full_path_of_param_file   your_order > log 2>&1 &
 ```
+
+For runs without covariats:
+```
+docker pull haoyangz/wave-variant-scoring
+docker run --rm -w /scripts/ -u $(id -u) -v /topfolder:/topfolder -i haoyangz/wave-variant-scoring /scripts/run.r  full_path_of_param_file   your_order > log 2>&1 &
+```
+
+In both cases:
+
 * `topfolder` : The common topfolder under which you store **ALL** the relevant data and want to output the result. For Gifford lab, it is usually `/cluster`
 
 * `full_path_of_param_file `: path to param file (see below)
@@ -42,7 +50,7 @@ Example: (see [here](https://github.com/gifford-lab/GERV/blob/master/variant-sco
 #snp_name BCRANK_1000flank_AF001_1KG
 ```
 
-+ `model_parentdir`: the parent directory of the raw output of k-mer model
++ `model_parentdir`: the full path to the parent directory of the raw output of k-mer model
 
 + `expt_name`: the folder name of the raw output of k-mer model. So the full path of the k-mer model output is supposed to be $model_parentdir$/$expt_name$/ . GERV will automatically parse the input.list file under that directory to get the parameters for that k-mer model.
 

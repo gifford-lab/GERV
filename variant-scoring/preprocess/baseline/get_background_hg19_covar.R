@@ -33,12 +33,17 @@ ntokmer<-function(num,kl){
 		x0nt = x0data;
 		x0 = x0nt;
 	}
+	indir = paste0(OUT_DIR,ename_in)
+	covfile = paste0(indir,'/covariates.in')
+	system(paste0('lzop -d ',covfile,'.lzo'))
+	betafile = paste0(outdir,'/beta_',bestreg,'.bin')
+
 setwd('/kmm/delete_later/build/')
-cmd = (paste0('sh -c \"make -j CXX_DEFINES=\\\"-DK=',K,' -DRESOL=',RESOLUTION,' -DKBIG=',kmax,' -DMINIBATCH=1024\\\" \"'))
+cmd = (paste0('sh -c \"make -j CXX_DEFINES=\\\"-DK=',K,' -DRESOL=',RESOLUTION,' -DKBIG=',kmax,' -DK_BETA=',DK_BETA,' -DNUM_COV=',DNUM_COV,' -DLINK=',DLINK,'\\\" \"'))
 print(cmd)
 system(cmd)
 
-cmd =(paste0('sh -c \"./validation  --output=',bg.file,' --genome=',genomefile,' --xopt=',outdir,'/',param1,'_',bestreg,'.bin --start=',genomestart,' --end=',genomeend,' --x0=',x0,' --x0nt=',x0nt,'\"'))
+cmd =(paste0('sh -c \"./validation  --output=',bg.file,' --genome=',genomefile,' --xopt=',outdir,'/',param1,'_',bestreg,'.bin --start=',genomestart,' --end=',genomeend,' --x0=',x0,' --x0nt=',x0nt,' --covariates=',covfile,' --beta=',betafile,'\"'))
 print(cmd)
 system(cmd)
 #system(paste0(validationfile,' --output=',bg.file,' --genome=',genomefile,' --xopt=',outdir,'/yall_',bestreg,'.bin',' --start=0 --end=',genomesize_midpoint,' --x0=',0),intern=T)

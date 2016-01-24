@@ -14,10 +14,10 @@ ntokmer<-function(num,kl){
 }	
 
     procfiles=list.files(OUT_DIR)
-    procdirs=file.info(paste0(OUT_DIR,procfiles))$isdir
+    procdirs=file.info(file.path(OUT_DIR,procfiles))$isdir
     outnames=procfiles[procdirs]
      
-    outdir = paste0(OUT_DIR,ename)
+    outdir = file.path(OUT_DIR,ename)
      
     readsize=19000000
     xszall=sum(4^(0:kmax))*K2/RESOL
