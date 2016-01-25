@@ -10,22 +10,13 @@ Scripts for scoring variants using the raw output from the kmer-model
 
 ##Quick example
 
-For runs with (DNase-seq) covariate:
 ```
-docker pull haoyangz/wave-variant-scoring-covar
-docker run --rm -w /scripts/ -u $(id -u) -v /topfolder:/topfolder -i haoyangz/wave-variant-scoring-covar /scripts/run.r  full_path_of_param_file   your_order > log 2>&1 &
+docker pull haoyangz/gerv
+docker run --rm -w /scripts/ -u $(id -u) -v /topfolder:/topfolder -i haoyangz/gerv /scripts/run.r \
+	full_path_of_param_file  your_order
 ```
-
-For runs without covariats:
-```
-docker pull haoyangz/wave-variant-scoring
-docker run --rm -w /scripts/ -u $(id -u) -v /topfolder:/topfolder -i haoyangz/wave-variant-scoring /scripts/run.r  full_path_of_param_file   your_order > log 2>&1 &
-```
-
-In both cases:
 
 * `topfolder` : The common topfolder under which you store **ALL** the relevant data and want to output the result. For Gifford lab, it is usually `/cluster`
-
 * `full_path_of_param_file `: path to param file (see below)
 * `your_order`: what you wish to do (see below)
 
