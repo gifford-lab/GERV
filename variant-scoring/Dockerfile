@@ -14,10 +14,16 @@ RUN mkdir /scripts/postprocess/
 RUN mkdir /mcrtmp/
 
 RUN mkdir /kmm
-RUN git clone https://thashim-ro:*SybT2X9@bitbucket.org/ddkang/ccm_testing.git /kmm/delete_later
-RUN cd /kmm/delete_later; git checkout glm_v2
-RUN mkdir /kmm/delete_later/build
-RUN cd /kmm/delete_later/build; cmake ..
+RUN git clone https://thashim-ro:*SybT2X9@bitbucket.org/ddkang/ccm_testing.git /kmm/master
+RUN cd /kmm/master; git checkout glm_v2
+RUN mkdir /kmm/master/build
+RUN cd /kmm/master/build; cmake ..
+
+RUN git clone https://thashim-ro:*SybT2X9@bitbucket.org/thashim/delete_later.git /kmm/nocov
+RUN cd /kmm/nocov; git checkout no91
+RUN mkdir /kmm/nocov/build
+RUN cd /kmm/nocov/build; cmake ..
+
 RUN chmod -R 777 /kmm
 
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile

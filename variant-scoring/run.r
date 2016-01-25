@@ -88,6 +88,11 @@ if (length(covariate)>0){
 	DNUM_COV = 1
 	km_ver = 3
 }
+if (km_ver==2){
+	system('ln -s /kmm/master /kmm/delete_later')
+}else{
+	system('ln -s /kmm/nocov /kmm/delete_later')
+}
 ### Run the script
 if (order=='preprocess'){
 	runModel(2)
