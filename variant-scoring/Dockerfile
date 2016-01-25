@@ -6,7 +6,6 @@ RUN sudo apt-get update
 RUN sudo apt-get install -yq tar r-base make gcc libc6-dev Docker git git-core git-email g++ gdb build-essential libboost-all-dev cmake mpich2 libmpich2-dev python-numpy python-scipy python-matplotlib python-tk python-pip lzop
 RUN sudo apt-get -q -y install git git-core g++ build-essential libboost-all-dev cmake r-base python-pip lzop libgsl0-dev
 
-RUN mkdir /packages/
 RUN mkdir /scripts/
 RUN mkdir /seq_data/
 RUN mkdir /scripts/snp-kmer-scoring/
@@ -21,22 +20,12 @@ RUN mkdir /kmm/delete_later/build
 RUN cd /kmm/delete_later/build; cmake ..
 RUN chmod -R 777 /kmm
 
-RUN cd /packages/ && \
-	wget -nv http://cran.r-project.org/src/contrib/bitops_1.0-6.tar.gz && \
-	tar -zxvf bitops_1.0-6.tar.gz && \
-	R CMD INSTALL bitops && \
-	wget -nv http://cran.r-project.org/src/contrib/R.methodsS3_1.7.0.tar.gz && \
-	tar -zxvf R.methodsS3_1.7.0.tar.gz && \
-	R CMD INSTALL R.methodsS3 && \
-	wget -nv http://cran.r-project.org/src/contrib/R.oo_1.19.0.tar.gz && \
-	tar -zxvf R.oo_1.19.0.tar.gz && \
-	R CMD INSTALL R.oo && \
-	wget -nv http://cran.r-project.org/src/contrib/R.utils_2.0.2.tar.gz && \
-    tar -zxvf R.utils_2.0.2.tar.gz && \
-    R CMD INSTALL R.utils && \
-	wget -nv http://cran.r-project.org/src/contrib/R.matlab_3.2.0.tar.gz && \
-    tar -zxvf R.matlab_3.2.0.tar.gz && \
-    R CMD INSTALL R.matlab
+RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
+RUN Rscript -e "install.packages('bitops')"
+RUN Rscript -e "install.packages('R.methodsS3')"
+RUN Rscript -e "install.packages('R.oo')"
+RUN Rscript -e "install.packages('R.utils')"
+RUN Rscript -e "install.packages('R.matlab')"
 
 ENV LD_LIBRARY_PATH /opt/mcr/v83/runtime/glnxa64:/opt/mcr/v83/bin/glnxa64/
 ENV XAPPLRESDIR /opt/mcr/v83/X11/app-defaults
