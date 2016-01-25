@@ -13,6 +13,8 @@ ntokmer<-function(num,kl){
 }	
 
     outdir = file.path(OUT_DIR,ename);
+	system(paste0('lzop -d ',outdir,'/*.lzo'))
+	system(paste0('lzop -d ',indir,'/covariates.in.lzo'))
      
     readsize=19000000
     xszall=sum(4^(0:kmax))*K2
