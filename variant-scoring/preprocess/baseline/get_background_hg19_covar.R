@@ -13,6 +13,7 @@ ntokmer<-function(num,kl){
 }	
 
     outdir = file.path(OUT_DIR,ename);
+	indir = paste0(OUT_DIR,ename_in)
 	system(paste0('lzop -d ',outdir,'/*.lzo'))
 	system(paste0('lzop -d ',indir,'/covariates.in.lzo'))
      
@@ -35,7 +36,6 @@ ntokmer<-function(num,kl){
 		x0nt = x0data;
 		x0 = x0nt;
 	}
-	indir = paste0(OUT_DIR,ename_in)
 	covfile = paste0(indir,'/covariates.in')
 	system(paste0('lzop -d ',covfile,'.lzo'))
 	betafile = paste0(outdir,'/beta_',bestreg,'.bin')
