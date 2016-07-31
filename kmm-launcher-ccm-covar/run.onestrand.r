@@ -17,11 +17,12 @@ itype='c3.8xlarge'
 
 print('parse credential file')
 cf=readLines(cred.file)
-cf=cf[-grep('#',cf)]
+if (length(grep('#',cf))>0) cf = cf[-grep('#',cf)] 
 for(sp in strsplit(cf,':')){
     print(sp)
     assign(sp[1],sp[2])
 }
+
 if(!file.exists(rsa_key)){print('check rsa key is readable')}
 keyname=rev(strsplit(rsa_key,'[/.]')[[1]])[2]
 print('setting key name to:')
@@ -35,11 +36,8 @@ rsa_key = tmp
 
 #set up credentials
 starcluster.rsa = rsa_key
-#mailaddr = 'thashim@csail.mit.edu' # MAKE SURE THIS EMAIL IS SET UP ON AMAZON SES
-key.name = key_name
 access.key = access_key
 secret.key = secret_key
-bucket.name = bucket_name
 
 system('mkdir ~/.aws')
 system(paste0('printf \"[default]\naws_access_key_id=',access_key,'\naws_secret_access_key=',secret_key,'\" > ~/.aws/config'))

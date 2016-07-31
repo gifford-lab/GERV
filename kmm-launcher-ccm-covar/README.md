@@ -32,7 +32,6 @@ region:us-east-1d
 rsa_key:/cluster/ec2/starcluster.rsa
 access_key:REDACTED
 secret_key:REDACTED
-key_name:starcluster
 mailaddr:thashim@csail.mit.edu
 ```
 
