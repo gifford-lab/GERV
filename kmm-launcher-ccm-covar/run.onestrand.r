@@ -24,7 +24,6 @@ for(sp in strsplit(cf,':')){
 }
 
 if(!file.exists(rsa_key)){print('check rsa key is readable')}
-keyname=rev(strsplit(rsa_key,'[/.]')[[1]])[2]
 print('setting key name to:')
 print(keyname)
 

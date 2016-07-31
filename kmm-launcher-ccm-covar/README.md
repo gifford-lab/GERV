@@ -32,6 +32,7 @@ region:us-east-1d
 rsa_key:/cluster/ec2/starcluster.rsa
 access_key:REDACTED
 secret_key:REDACTED
+keyname:starcluster
 mailaddr:thashim@csail.mit.edu
 ```
 
@@ -46,7 +47,9 @@ mailaddr:thashim@csail.mit.edu
 
 + `access_key` and `secret_key`: The credentials for your Amazon EC2 account. Checkout [here](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) for instruction.
 
-+ `mailaddr` sets the email address that gets emailed at the end of a job. The emails will probably get spam-boxed first, so check spam folder.
++ `keyname`: The name of the key-pair. From your EC2 [console](https://console.aws.amazon.com/ec2/), go to 'Key Pairs' under 'NETWORK & SECURITY' on the left to find the valid key-pair name matched to your rsa_keys indicated above.
+
++ `mailaddr`: sets the email address that gets emailed at the end of a job. The emails will probably get spam-boxed first, so check spam folder.
 
 #####Optional options:
 
