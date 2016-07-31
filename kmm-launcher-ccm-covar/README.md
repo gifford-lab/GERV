@@ -10,20 +10,20 @@ Register an Amazon Elastic Cloud 2 (EC2) account following the instruction [here
 Run the command in the git repo root:
 
 ```
-docker pull thashim/kmm-launcher-cov
-docker run --rm -w `pwd` -v /topfolder:/topfolder -i thashim/kmm-launcher-cov /kmm/run.onestrand.r example/covbinom.list example/auth.txt
+docker pull haoyangz/gerv:launcher
+docker run --rm -w `pwd` -v TOPFOLDER:TOPFOLDER -i haoyangz/gerv:launcher /kmm/run.onestrand.r PARAM.LIST AUTH.TXT
 ```
 
 There are three parameters changable in the running command:
 
-+ `topfolder`: This should be the **common** top folder of the repo and all your bam/genome/list/auth files. For example if the repo and all you relevant files are under /cluster/project/wordfinder, you use either  */cluster* or */cluster/project* or */cluster/project/wordfinder*. The function of this argument is for the scripts inside Docker to access the data files on your file system.
-+ `example/covbinom.list`: See step1
-+ `example/auth.txt`: See step2
++ `TOPFOLDER`: This should be the **common** top folder of the repo and all your bam/genome/list/auth files. For example if the repo and all you relevant files are under /cluster/project/wordfinder, you use either  */cluster* or */cluster/project* or */cluster/project/wordfinder*. The function of this argument is for the scripts inside Docker to access the data files on your file system.
++ `AUTH.TXT`: a file with EC2 account information. See step1 for details and [examples](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/auth.txt).
++ `PARAM.LIST`: a file with running parameters. See step2 for details and [examples](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/param.list).
 
 ##Step1: Set up information needed to run on EC2
 
-### auth.txt
-Example: (/example/auth.txt)
+### [auth.txt](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/auth.txt)
+**No space or tab allowed before and after colon !**
 
 ```
 realm:us-east-1
@@ -59,9 +59,8 @@ mailaddr:thashim@csail.mit.edu
 
 
 ##Step2: Set up parameters for the model
-### *.list
+### [param.list](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/param.list)
 
-Example: (/example/covbinom.list)
 
 ```
 #bam.prefix /cluster/projects/wordfinder/bams/
@@ -84,8 +83,6 @@ fos_run1,fos/bam1,fos/bam2,fos/bam3
 #quality 20
 ctcf_run1,ctcf/bam1,ctcf/bam2,ctcf/bam3
 ```
-
-Nearly all options can be overridden in a .list file.
 
 The general format of a .list file is
 
@@ -121,7 +118,7 @@ Later variable assignment lines starting with `#` will override earlier ones. In
 
 + `branch`: Use *glm_v2* for the full model. Use *no91* for the model without DNase-seq covariates.
 
-+ `covariate`: The path (relative to `bam_prefox`) of DNase-seq bams. 
++ `covariate`: The path (relative to `bam_prefox`) of DNase-seq bams. **Don't include this parameter for model without DNase-seq covariates**
 
 + `quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
 

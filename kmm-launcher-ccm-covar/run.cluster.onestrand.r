@@ -49,9 +49,9 @@ unlink(tmpdir,T,T)
 dir.create(tmpdir)
 
 for(bamfile in bamlist){
-    if(!file.exists(paste0(bam.prefix,bamfile,'.bai'))){
+    if(!file.exists(file.path(bam.prefix,paste0(bamfile,'.bai')))){
         print("No bam index found, reindexing")
-        x=paste0(bam.prefix,bamfile)
+        x=file.path(bam.prefix,bamfile)
         y=paste0("samtools index ",shQuote(x))
         print(y)
         system(y,wait=T)
@@ -65,7 +65,7 @@ unlink(paste0(tmpdir,exptname,'/*'),T,T)
 for(bamfile in bamlist){
     print(bamfile)
     clist = sapply(1:length(chr.name),function(chr){
-        paste0("(samtools view -F 788 -q ",quality," ",shQuote(paste0(bam.prefix,bamfile))," chr",chr.name[chr]," | cut -f 4 >> \'",tmpdir,exptname,"/allreads-",chr,".csv\'; touch ",tmpdir,exptname,"/chr",chr,".done)")
+        paste0("(samtools view -F 788 -q ",quality," ",shQuote(file.path(bam.prefix,bamfile))," chr",chr.name[chr]," | cut -f 4 >> \'",tmpdir,exptname,"/allreads-",chr,".csv\'; touch ",tmpdir,exptname,"/chr",chr,".done)")
     })
     writeLines(clist,paste0(tmpdir,'commlist',cms[1],'.txt'))
     system(paste0('cat ',tmpdir,'commlist',cms[1],'.txt | parallel --progress -j 4'))
@@ -91,9 +91,9 @@ if(covariate!='none'){
     unlink(tmpdir.cov,T,T)
     dir.create(tmpdir.cov)
     for(bamfile in covbamlist){
-        if(!file.exists(paste0(bam.prefix,bamfile,'.bai'))){
+        if(!file.exists(file.path(bam.prefix,paste0(bamfile,'.bai')))){
             print("No bam index found, reindexing")
-            x=paste0(bam.prefix,bamfile)
+            x=file.path(bam.prefix,bamfile)
             y=paste0("samtools index ",shQuote(x))
             print(y)
             system(y,wait=T)
@@ -105,7 +105,7 @@ if(covariate!='none'){
     for(bamfile in covbamlist){
         print(bamfile)
         clist = sapply(1:length(chr.name),function(chr){
-            paste0("(samtools view -F 788 -q ",quality," ",shQuote(paste0(bam.prefix,bamfile))," chr",chr.name[chr]," | cut -f 4 >> \'",tmpdir.cov,exptname,"/allreads-",chr,".csv\'; touch ",tmpdir.cov,exptname,"/chr",chr,".done)")
+            paste0("(samtools view -F 788 -q ",quality," ",shQuote(file.path(bam.prefix,bamfile))," chr",chr.name[chr]," | cut -f 4 >> \'",tmpdir.cov,exptname,"/allreads-",chr,".csv\'; touch ",tmpdir.cov,exptname,"/chr",chr,".done)")
         })
         writeLines(clist,paste0(tmpdir.cov,'commlist',cms[1],'.txt'))
         system(paste0('cat ',tmpdir.cov,'commlist',cms[1],'.txt | parallel --progress -j 4'))
