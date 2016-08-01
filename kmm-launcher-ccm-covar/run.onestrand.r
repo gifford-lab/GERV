@@ -124,7 +124,7 @@ for( i in 1:length(epointers) ) {
 }
 
 runlist=sapply(1:length(epointers),function(i){
-    paste0('/kmm/run.cluster.onestrand.r ',i)
+    paste0('/kmm/run.cluster.onestrand.r ',i,' > log_',format(Sys.time(), "%h_%d_%R_%Y"),'_',i,' 2>&1')
 })
 writeLines(runlist,'/kmm/runlist.txt')
 system('cat /kmm/runlist.txt | parallel')
