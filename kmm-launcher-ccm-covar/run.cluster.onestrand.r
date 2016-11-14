@@ -210,14 +210,16 @@ rsystem('echo -e "Host github.mit.edu\n\tStrictHostKeyChecking no\n" >> ~/.ssh/c
 rsystem('git clone https://thashim-ro:*SybT2X9@bitbucket.org/ddkang/ccm_testing.git /home/ubuntu/delete_later')
 rsystem('mkdir /home/ubuntu/delete_later/build')
 rsystem('rm -rf ~/delete_later/build/*')
-rsystem(paste0('cd ~/delete_later/; git pull; git checkout ',branch))
 
 if(covariate!='none'){
     ncov = 1
+    branch = 'glm_v2'
 }else{
     ncov = 0
     kbeta = 0
+    branch = 'no91'
 }
+rsystem(paste0('cd ~/delete_later/; git pull; git checkout ',branch))
 cmakestr = paste0('-DK=',k,' -DRESOL=',resol,' -DKBIG=',maxk,' -DLINK=',link,' -DNUM_COV=',ncov,' -DK_BETA=',kbeta)
 rsystem(paste0('cd ~/delete_later/build/; cmake .. ; make clean; make -j CXX_DEFINES=\"',cmakestr,'\"'))
 ##make reads

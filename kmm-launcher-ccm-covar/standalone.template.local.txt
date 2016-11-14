@@ -1,0 +1,6 @@
+#!/bin/bash
+READ_STR
+COV_STR
+RUN_STR
+sudo Rscript POSTPROC_SCRIPT INPUTDIR REALOUTDIR OUTDIR/summaries/ OUTDIR/runlog.txt BUILD_DIR TEST_CHR
+cd KMMDIR; git log > OUTDIR/gitlog.txt; git diff > OUTDIR/gitdiff.txt; cd OUTDIR

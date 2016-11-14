@@ -1,7 +1,7 @@
 #bam.prefix /cluster/zeng/research/reads/
 #gbase /cluster/projects/wordfinder/data/genome/
 #quality 0
-#bucket_name zengtest
+#outdir /cluster/zeng/research/GERV_result/
 #maxk 8
 #k 100
 #resol 4

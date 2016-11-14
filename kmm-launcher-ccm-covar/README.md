@@ -1,87 +1,62 @@
-
-A set of ec2 support scripts for the kmer-model which takes a bam and automatically generates fitted output to be placed into amazon's S3 storage system
+Train a sequence-based model that predicts ChIP-seq or DNase-seq read counts from the sequence context.
 
 ## Prerequisites
-Register an Amazon Elastic Cloud 2 (EC2) account following the instruction [here](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html)
-
++ [Docker](https://www.docker.com/)
 
 ##	Quick example
 
-Run the command in the git repo root:
++ To run on Amazon EC2 cloud
 
-```
-docker pull haoyangz/gerv:launcher
-docker run --rm -w `pwd` -v TOPFOLDER:TOPFOLDER -i haoyangz/gerv:launcher /kmm/run.onestrand.r PARAM.LIST AUTH.TXT
-```
+	```
+	docker pull haoyangz/gerv:launcher
+	docker run --rm -w `pwd` -v TOPFOLDER:TOPFOLDER -i  \
+			haoyangz/gerv:launcher /kmm/run.onestrand.r PARAM.LIST AUTH.TXT
+	```
 
-There are three parameters changable in the running command:
+	+ `TOPFOLDER`: This should be the **common** top folder of the repo and all your bam/genome/list/auth files. For example if the repo and all you relevant files are under /cluster/project/wordfinder, you use either  */cluster* or */cluster/project* or */cluster/project/wordfinder*. The function of this argument is for the scripts inside Docker to access the data files on your file system.
+    + `PARAM.LIST`: a file with running parameters. See step2 for details. 
+    + `AUTH.TXT`: (optional for running on Amazon EC2 only) a file with EC2 account information. See step1 for details.
 
-+ `TOPFOLDER`: This should be the **common** top folder of the repo and all your bam/genome/list/auth files. For example if the repo and all you relevant files are under /cluster/project/wordfinder, you use either  */cluster* or */cluster/project* or */cluster/project/wordfinder*. The function of this argument is for the scripts inside Docker to access the data files on your file system.
-+ `AUTH.TXT`: a file with EC2 account information. See step1 for details and [examples](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/auth.txt).
-+ `PARAM.LIST`: a file with running parameters. See step2 for details and [examples](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/param.list).
++ To run locally
+	
+	```
+    docker pull haoyangz/gerv:launcher
+    docker run --rm -w `pwd` -v TOPFOLDER:TOPFOLDER -v /etc/passwd:/etc/passwd -i -u $(id -u)  \
+			haoyangz/gerv:launcher /kmm/run.onestrand.local.r PARAM.LIST
+    ```
 
-##Step1: Set up information needed to run on EC2
+	+ `TOPFOLDER`: same as above
+	+ `PARAM.LIST`: same as above
 
-### [auth.txt](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/auth.txt)
-**No space or tab allowed before and after colon !**
-
-```
-realm:us-east-1
-price:3.0
-region:us-east-1d
-rsa_key:/cluster/ec2/starcluster.rsa
-access_key:REDACTED
-secret_key:REDACTED
-keyname:starcluster
-mailaddr:thashim@csail.mit.edu
-```
+## Step1: Set up EC2-related configuration (Optional)
+To run on Amazon EC2 cloud, set up the EC2-related configuration as instructed [here](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/README_ec2.md).
 
 
-#####Useful options:
+## Step2: Set up parameters for the model
 
-+ `price`: The max bid price. Setting this value to Inf will use on-demand allocation (cannot be killed) but will cost a fixed price of ~$.16 / hr. Use this setting only if there's heavy contention, and you cannot wait. $3 is reasonable. Set too low and your jobs will get killed before completed
-
-+ `region`: The job submit regions. You can check the spot prices of a `c3.8xlarge` and pick a cheap region
-
-+ `rsa_key`: The physical location of the key-pair file for your Amazon EC2 account. This file enables the user to remotely communicate with the EC2 instance created. Checkout [here](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair) for a instruction to generate your key-pair file.
-
-+ `access_key` and `secret_key`: The credentials for your Amazon EC2 account. Checkout [here](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) for instruction.
-
-+ `keyname`: The name of the key-pair. From your EC2 [console](https://console.aws.amazon.com/ec2/), go to 'Key Pairs' under 'NETWORK & SECURITY' on the left to find the valid key-pair name matched to your rsa_keys indicated above.
-
-+ `mailaddr`: sets the email address that gets emailed at the end of a job. The emails will probably get spam-boxed first, so check spam folder.
-
-#####Optional options:
-
-+ `itype`: The instance type: valid alternatives are cc2.8xlarge, to use this you must also change the AMI.
-
-+ `ami`: The AMI type: you will want to use the HVM image (`ami-864d84ee`) if you use any other instances like cc2.8xlarge or r3.8xlarge.
-
-
-##Step2: Set up parameters for the model
-### [param.list](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/param.list)
+Examples: [local version](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/param.local.list),[EC2 version](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/example/param.list)
 
 
 ```
-#bam.prefix /cluster/projects/wordfinder/bams/
+#bam.prefix /cluster/zeng/research/reads/
 #gbase /cluster/projects/wordfinder/data/genome/
 #quality 0
-#postfix .examplerun
-#bucket_name batch_runs
+#bucket_name zengtest
+#outdir /cluster/zeng/research/GERV_result/
 #maxk 8
-#k 1000
+#k 100
 #resol 4
 #read.max 5
+#genome hg19
 #smooth.window 20
-#genome mm10
-#covariate dnase/bam1, dnase/bam2
-#kbeta 100
-#branch glm_v2
-fos_run1,fos/bam1,fos/bam2,fos/bam3
 
-#smooth.window 10
-#quality 20
-ctcf_run1,ctcf/bam1,ctcf/bam2,ctcf/bam3
+#postfix .withoutcov
+CTCF_ENCODE_GM12878,CTCF/CTCF_crowford/ALL10/141104_Zeng_hg19_CTCF_GM12878_None_Rep1-ready.bam
+
+#postfix .withcov
+#kbeta 100
+#covariate DNase/GM12878.DNase/141116_Crawford_hg19_DNase_GM12878_None_Rep1_bwa_hg19/141116_Crawford_hg19_DNase_GM12878_None_Rep1/141116_Crawford_hg19_DNase_GM12878_None_Rep1-ready.bam
+CTCF_ENCODE_GM12878,CTCF/CTCF_crowford/ALL10/141104_Zeng_hg19_CTCF_GM12878_None_Rep1-ready.bam
 ```
 
 The general format of a .list file is
@@ -103,7 +78,6 @@ The launcher parses from top to bottom, setting each variable_name to value. Whe
 Later variable assignment lines starting with `#` will override earlier ones. In the example above, `fos_run1` launches with a `quality` parameter of 0, but `ctcf_1` is launched with `quality` of 20 due to the later override line.
 
 
-
 #####Common arguments
 
 + `bam_prefix`: The top folder of **ALL** the bam files used, including ChIP-seq and covaraites DNase-seq bams.
@@ -111,14 +85,17 @@ Later variable assignment lines starting with `#` will override earlier ones. In
 + `gbase`: The folder where genome files are stored. Do not change if run within gifford lab. Currently only hg19 and mm10 are supported, and their genome datafile can be found on [GERV website](http://gerv.csail.mit.edu).
 + `genome`: set to the organism genome. Currently only hg19 and mm10 are supported.
 
-+ `bucket_name`: s3 bucket name. This should generally be your username / project name to avoid mixing multiple people's jobs. 
++ output related:
+	+ Top directory
+		+	(When running on EC2) `bucket_name`: s3 bucket name.  **Make sure your specified bucket name exists in s3 before starting!**. This should generally be your username / project name to avoid mixing multiple people's jobs. 
 
-+ `postfix`: postfix applied to jobs. Each job will go into a S3 bucket where they are separated into folders named $experiment_name$$postfix$ (no spacer in between)
+		+	(When running locally) `outdir`: The top directory to save all the input and outputfor each experiment. 
+
+	+ Subdirectory
+		+	`postfix`: a postfix appended to `experiment_name`. It's useful when you wish to try different sets of parameters on the same batch of jobs, where you can simply specify a  different `postfix` for each parameter set, for instance ".withcovariate" or ".defaultparams". Each job will go into a subfolder named `experiment_name`+`postfix` (+ denotes string concatenation).
 
 
-+ `branch`: Use *glm_v2* for the full model. Use *no91* for the model without DNase-seq covariates.
-
-+ `covariate`: The path (relative to `bam_prefox`) of DNase-seq bams. **Don't include this parameter for model without DNase-seq covariates**
++ `covariate`: The path (relative to `bam_prefox`) of DNase-seq bams. **Set to 'none' for model without DNase-seq covariates**
 
 + `quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
 
@@ -135,13 +112,45 @@ Later variable assignment lines starting with `#` will override earlier ones. In
 
 + `smooth.window`: smooth the input by this many bases before feeding into the model. Useful for low-coverage experiments. Default of 10-20 is fine for all but extreme high or low coverage experiments. 50 was used in the GERV paper.
 
-+ `kbeta`: window size for the prediction of target (ie ChIP) from covariate (ie DNase). **Don't include this parameter for model without DNase-seq covariates**. 200 was used in the GERV paper
++ `kbeta`: window size for the prediction of target (ie ChIP) from covariate (ie DNase). 200 was used in the GERV paper. This will be ignored if `covariate` is set as "none".
 
 #### Things to note:
 
-+ **Make sure your specified bucket name exists in s3 before starting!**
++ **All the path of the bam files, including the covariates, should be relative to `bam_prefix`**
 
-+ **All the path of the bam files should be relative to the folder specificied after `bam_prefix`**
+## Understand the output
++	Log files
+	+	`runlog.txt`: the run log for the training
+	+	`nohup.txt`: the run log for every job, including preprocessing, training, postprocessing and so on.
+	+	`runall.sh`: the command that the program runs.
+	+	`param.list`: the parameter file you used
+	
++	Input data
 
-+ **Don't include `kbeta` and `covariates` for the model without DNase-seq covariates.**
+	All the input reads and accessory data are in 'input'
+
++	Trained model
+
+	In `output` folder, the parameters for each training iteration (15 iter in total) are saved in binary format (4 byte double). In R you can read by `readBin(filename,double(),size=4,n=filesize)`
+	+	`yall`: the influence profile of k-mers (size=(sum(4^(0:kmax)))*k2/resol, all the kmers concatenated). K-mers are ordered as "A,T,G,C,AA,AT,AG,AC,TA,TT,TG,TC..."
+	+	`x0`: offsets (size=2)
+	+	`eta`: regularization coefficient (size=1)
+	+	`heldout`: loss evaluated on heldout data (size=1)
+
++	Evaluation
+
+	In `summaries` folder, you can find predicted read counts and preliminaly quality analysis.
+	+	`fitted.in`: the predicted read counts across genome using the parameters with the lowest heldout loss
+	+	K-mer profile
+		+	`profiles.pdf`: the influence profiles of k-mers
+		+	`hctest-dist2.pdf`: profile comparision between the original sequence and the reverse-compliment of each k-mer
+		+	`heatplot.pdf`: k-mer clustering based on influence profile.
+	+	Perforamnce
+		+	`heldout.pdf`: how the heldout loss changes with training iteration
+		+	`cor.txt`: correlation
+		+	`hits.txt`: coverage of hits
+	+	Comparision between predicted vs. observed read count	
+		+	`err.pdf`
+		+	`detail.pdf`
+		+	`callplots.pdf`
 
