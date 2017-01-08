@@ -24,6 +24,7 @@ ADD standalone.template.txt /kmm/standalone.template.txt
 ADD standalone.template.local.txt /kmm/standalone.template.local.txt
 ADD user-data.txt /kmm/user-data.txt
 ADD postproc.r /kmm/postproc.r
+ADD postproc_covar.r /kmm/postproc_covar.r
 
 RUN chmod +x /kmm/run.onestrand.r
 RUN chmod +x /kmm/run.cluster.onestrand.r

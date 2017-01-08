@@ -175,8 +175,9 @@ while(length(grep('done',rsystem('ls /mnt',intern=T)))==0) { Sys.sleep(5) }
 ####
 # Transfer files.
 
+scptoclus('/kmm/postproc.r','~/postproc.r')
+scptoclus('/kmm/postproc_covar.r','~/postproc_covar.r')
 scptoclus(genomedir,'/mnt/input/genome.in')
-
 scptoclus(offset.file,'/mnt/input/offsets.txt')
 
 clist=sapply(1:(length(chr.name)),function(chr){
@@ -247,8 +248,10 @@ rsystem(paste0('printf \"[default]\naws_access_key_id=',access.key,'\naws_secret
 
 if(covariate!='none'){
     coption=paste0('--covariates=/mnt/input/covariates.in --heldout_covariates=/mnt/input/heldout.covariates.in --cov_max=',cov.max)
+	postproc_script='~/postproc_covar.r'
 }else{
     coption='--cov_max=1'
+	postproc_script='~/postproc.r'
 }
 
 runstr=paste0('~/delete_later/build/mpi_motif --out_dir=/mnt/output --genome=/mnt/input/genome.in --reads=/mnt/input/reads.in --num_bases=',train.bases,' --read_max=',read.max,' --smooth_window_size=',smooth.window,' --heldout_start=',heldout.start,' --heldout_size=',test.bases,' --heldout_reads=/mnt/input/heldout.in ',coption,' 2>&1 | tee /home/ubuntu/runlog.txt')
@@ -265,6 +268,7 @@ rl=gsub('EMAIL',mailaddr,rl)
 rl=gsub('RUN_STR',runstr,rl)
 rl=gsub('TEST_CHR',testchr,rl)
 rl=gsub('BUCKET_NAME',bucket_name,rl)
+rl=gsub('POSTPROC_SCRIPT',postproc_script,rl)
 
 rsystem(paste0('printf \'',paste0(rl,collapse='\n'),'\' > ~/runall.sh'))
 rsystem('chmod +x ~/runall.sh')
