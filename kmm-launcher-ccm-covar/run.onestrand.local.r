@@ -5,6 +5,7 @@ args <- commandArgs(trailingOnly = TRUE)
 print(args)
 
 input.list = args[1]
+cur_dir = args[2]
 
 ############
 # default parameters (can be overwirtten in .list files
@@ -80,7 +81,7 @@ for( i in 1:length(epointers) ) {
 }
 
 runlist=sapply(1:length(epointers),function(i){
-    paste0('/kmm/run.cluster.onestrand.local.r ',i,' > log_',format(Sys.time(), "%h_%d_%R_%Y"),'_',i,' 2>&1')
+    paste0('Rscript ',cur_dir,'/run.cluster.onestrand.local.r ',i,' ',cur_dir, ' > log_',format(Sys.time(), "%h_%d_%R_%Y"),'_',i,' 2>&1')
 })
-writeLines(runlist,'/kmm/runlist.txt')
-system('cat /kmm/runlist.txt | parallel')
+writeLines(runlist,paste0(cur_dir,'/runlist.txt'))
+system(paste0('cat ',cur_dir,'/runlist.txt | parallel'))

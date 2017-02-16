@@ -27,7 +27,7 @@ heldout.start= chroffs[trainchr + 1]
 test.bases = chroffs[testchr + 1] - heldout.start
 
 ##launch instance
-userdatablob=paste0(system('cat /kmm/user-data.txt | base64',intern=T),collapse='')
+userdatablob=paste0(system(paste0('cat ',cms[2],'/user-data.txt | base64'),intern=T),collapse='')
 lspec = paste0("\'{\"UserData\":\"",userdatablob,"\",\"ImageId\":\"",ami,"\",\"KeyName\":\"",keyname,"\",\"InstanceType\":\"",itype,"\"}\'")
 
 awscomm="aws"
@@ -36,7 +36,7 @@ if(price != "Inf"){
     sirname = strsplit(launch,'\t')[[1]][4]
     sistatus = ''
 }else{
-    launch=system(paste0(awscomm,' --region ',realm,' --output text ec2 run-instances --image-id ',ami,' --key-name ',keyname,' --instance-type ',itype,' --user-data file:///kmm/user-data.txt'),intern=T)
+    launch=system(paste0(awscomm,' --region ',realm,' --output text ec2 run-instances --image-id ',ami,' --key-name ',keyname,' --instance-type ',itype,' --user-data file://',cms[2],'/user-data.txt'),intern=T)
     iname=strsplit(launch,'\t')[[3]][8]
     sirname=iname
 }
@@ -175,8 +175,8 @@ while(length(grep('done',rsystem('ls /mnt',intern=T)))==0) { Sys.sleep(5) }
 ####
 # Transfer files.
 
-scptoclus('/kmm/postproc.r','~/postproc.r')
-scptoclus('/kmm/postproc_covar.r','~/postproc_covar.r')
+scptoclus(paste0(cur_dir,'/postproc.r','~/postproc.r'))
+scptoclus(paste0(cur_dir,'/postproc_covar.r','~/postproc_covar.r'))
 scptoclus(genomedir,'/mnt/input/genome.in')
 scptoclus(offset.file,'/mnt/input/offsets.txt')
 
@@ -256,7 +256,7 @@ if(covariate!='none'){
 
 runstr=paste0('~/delete_later/build/mpi_motif --out_dir=/mnt/output --genome=/mnt/input/genome.in --reads=/mnt/input/reads.in --num_bases=',train.bases,' --read_max=',read.max,' --smooth_window_size=',smooth.window,' --heldout_start=',heldout.start,' --heldout_size=',test.bases,' --heldout_reads=/mnt/input/heldout.in ',coption,' 2>&1 | tee /home/ubuntu/runlog.txt')
 
-rl=readLines('/kmm/standalone.template.txt')
+rl=readLines(paste0(cur_dir,'/standalone.template.txt'))
 rname=paste0(exptname,postfix)
 rl=gsub('READ_STR',readstr,rl)
 rl=gsub('COV_STR',covstr,rl)

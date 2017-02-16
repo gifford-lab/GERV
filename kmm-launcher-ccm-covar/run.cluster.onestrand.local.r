@@ -194,7 +194,7 @@ if(covariate!='none'){
 runstr=paste(file.path(kmmbuild_dir,'mpi_motif'),' --out_dir=',real_outdir,' --genome=',file.path(inputdir,'genome.in'),' --reads=',file.path(inputdir,'reads.in'),' --num_bases=',train.bases,' --read_max=',read.max,' --smooth_window_size=',smooth.window,' --heldout_start=',heldout.start,' --heldout_size=',test.bases,' --heldout_reads=',file.path(inputdir,'heldout.in'),' ', coption,' 2>&1 | tee ',file.path(outdir,'runlog.txt'),sep='')
 print(runstr)
 
-rl=readLines('/kmm/standalone.template.local.txt')
+rl=readLines(paste0(cur_dir,'/standalone.template.local.txt'))
 rl=gsub('READ_STR',readstr,rl)
 rl=gsub('COV_STR',covstr,rl)
 rl=gsub('RUN_STR',runstr,rl)

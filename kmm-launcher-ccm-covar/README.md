@@ -28,6 +28,26 @@ Train a sequence-based model that predicts ChIP-seq or DNase-seq read counts fro
 	+ `TOPFOLDER`: same as above
 	+ `PARAM.LIST`: same as above
 
++ To run locally without Docker (if you can't install it for some reason)
+	
+	Install a few packages:
+
+	```
+	sudo apt-get update
+	sudo apt-get -q -y install r-base openssh-client python-pip git-all cmake \
+								libboost-all-dev libgsl0-dev samtools parallel
+	```
+
+	Then run the model by:
+
+	```
+	cd $REPO_DIR
+	git checkout withoutdocker
+	Rscript run.onestrand.local.r PARAM.LIST $(pwd)
+	```
+	
+	+ `PARAM.LIST`: same as above
+
 ## Step1: Set up EC2-related configuration (Optional)
 To run on Amazon EC2 cloud, set up the EC2-related configuration as instructed [here](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/README_ec2.md).
 
