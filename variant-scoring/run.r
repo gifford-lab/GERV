@@ -85,10 +85,12 @@ blfile_outfile_suffix = paste0(blfile_tag,'.baseline.bin');
 seq_dir = paste0('/seq_data/');
 K2 = 2*as.numeric(k)
 if (length(covariate)>0){
-	DNUM_COV = 1
-	km_ver = 3
+	if (covariate[1]!='none'){
+		DNUM_COV = 1
+		km_ver = 3
+	}
 }
-if (km_ver==2){
+if (km_ver==3){
 	system('ln -s /kmm/master /kmm/delete_later')
 }else{
 	system('ln -s /kmm/nocov /kmm/delete_later')
