@@ -42,6 +42,7 @@ ADD run.r /scripts/
 ADD seq_data/ /seq_data/
 ADD kmersnp_module /scripts/
 ADD preprocess/baseline/get_background_hg19_covar.R /scripts/preprocess/baseline/
+ADD preprocess/baseline/get_background_hg19.R /scripts/preprocess/baseline/
 ADD preprocess/kmer_mat/prepare_kmer_mat.R /scripts/preprocess/kmer_mat/
 ADD postprocess/combineKSS/combine_snp.m /scripts/postprocess/combineKSS/
 
