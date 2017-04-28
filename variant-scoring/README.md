@@ -8,7 +8,7 @@ Scripts for scoring variants using the raw output from the kmer-model
 
 + Prepare the variants to score in VCF format, and partition by chromosome number. For instance all the variants on chromosome 1 should be stored in a file named `chr1.vcf`
 
-##Quick example
+## Quick example
 
 ```
 docker pull haoyangz/gerv

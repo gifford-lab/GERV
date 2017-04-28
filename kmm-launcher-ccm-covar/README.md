@@ -78,7 +78,7 @@ The launcher parses from top to bottom, setting each variable_name to value. Whe
 Later variable assignment lines starting with `#` will override earlier ones. In the example above, `fos_run1` launches with a `quality` parameter of 0, but `ctcf_1` is launched with `quality` of 20 due to the later override line.
 
 
-#####Common arguments
+##### Common arguments
 
 + `bam_prefix`: The top folder of **ALL** the bam files used, including ChIP-seq and covaraites DNase-seq bams.
 
@@ -99,7 +99,7 @@ Later variable assignment lines starting with `#` will override earlier ones. In
 
 + `quality`: mapper quality cutoff, pick q=0 by default, q=20 if attempting to avoid repeat regions and other hard-to-map regions. q=0 was used in the GERV paper.
 
-#####Tweakable parameters
+##### Tweakable parameters
 
 + `maxk`: Maximum kmer length to consider, 8 is generally good enough and the start of diminishing returns, and was used in the GERV paper.
 
