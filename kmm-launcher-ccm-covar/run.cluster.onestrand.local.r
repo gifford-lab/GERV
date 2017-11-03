@@ -185,10 +185,10 @@ scptoclus(input.list,outdir)
 
 if(covariate!='none'){
     coption=paste('--covariates=',file.path(inputdir,'covariates.in'),' --heldout_covariates=',file.path(inputdir,'heldout.covariates.in'),' --cov_max=',cov.max,sep='')
-	postproc_script='postproc.r'
+	postproc_script='/kmm/postproc.r'
 }else{
     coption='--cov_max=1'
-	postproc_script='postproc_covar.r'
+	postproc_script='/kmm/postproc_covar.r'
 }
 
 runstr=paste(file.path(kmmbuild_dir,'mpi_motif'),' --out_dir=',real_outdir,' --genome=',file.path(inputdir,'genome.in'),' --reads=',file.path(inputdir,'reads.in'),' --num_bases=',train.bases,' --read_max=',read.max,' --smooth_window_size=',smooth.window,' --heldout_start=',heldout.start,' --heldout_size=',test.bases,' --heldout_reads=',file.path(inputdir,'heldout.in'),' ', coption,' 2>&1 | tee ',file.path(outdir,'runlog.txt'),sep='')
