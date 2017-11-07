@@ -3,7 +3,7 @@ Train a sequence-based model that predicts ChIP-seq or DNase-seq read counts fro
 ## Prerequisites
 + [Docker](https://www.docker.com/)
 
-##	Quick example
+##	How to train the model
 
 + To run on Amazon EC2 cloud
 
@@ -27,6 +27,23 @@ Train a sequence-based model that predicts ChIP-seq or DNase-seq read counts fro
 
 	+ `TOPFOLDER`: same as above
 	+ `PARAM.LIST`: same as above
+
++ To perform a quick local run:
+	+ Download the example data, which will be automatically saved to example/data.
+		
+		```                   	
+		python download.py	
+		```                   	
+
+	+ Replace "REPO_HOME" in example/example.param.list with the actual path to this repository.
+
+	+ Replace "REPO_HOME" in the following command with the actual path to this repository. Then run it to train a GERV model. The output will be saved under REPO_HOME/testout.
+
+		```                                                                                           	
+		docker pull haoyangz/gerv:launcher                                                        	  	
+		docker run --rm -w `pwd` -v REPO_HOME:REPO_HOME -v /etc/passwd:/etc/passwd -i -u $(id -u)  \		
+		     haoyangz/gerv:launcher /kmm/run.onestrand.local.r example/example.param.list         	      
+		```                                                                                           	
 
 ## Step1: Set up EC2-related configuration (Optional)
 To run on Amazon EC2 cloud, set up the EC2-related configuration as instructed [here](https://github.com/gifford-lab/GERV/blob/master/kmm-launcher-ccm-covar/README_ec2.md).

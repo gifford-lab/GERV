@@ -1,0 +1,13 @@
+#bam.prefix REPO_HOME/example/data
+#gbase REPO_HOME/example/data
+#quality 0
+#outdir REPO_HOME/testout
+#maxk 8
+#k 100
+#resol 4
+#read.max 5
+#genome hg19
+#smooth.window 20
+
+#postfix .withoutcov
+test,example.bam
